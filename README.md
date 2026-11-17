@@ -40,4 +40,42 @@
 
 1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
 
+### Architecture & UI5 Configurations
 
+Fiori Elements 표준 List Report / Object Page V4 템플릿을 기반으로 구현된 고객 적용 솔루션 관리 앱입니다.
+
+<br>
+
+#### 1) annotation.xml — solutionDelete(논리 삭제) 액션 실행 시 테이블 자동 새로고침(Common.SideEffects)
+
+* **배경**:
+  - `solutionDelete` 액션은 레코드를 물리적으로 삭제하지 않고 `DELFLAG = 'X'` 플래그를 설정하는 논리적 삭제(Logical Delete) 방식으로 동작합니다.
+  - 액션 수행 시 백엔드 CDS View(`where delflag is initial`)에서 해당 행이 제외되지만, 프론트엔드에서는 엔티티셋 재조회 트리거가 없어 브라우저를 새로고침하기 전까지 행이 유지되는 현상이 발생합니다.
+* **해결 방안 (`annotation.xml`)**:
+  - `SAP__self.MainType` 엔터티 대상에 `com.sap.vocabularies.Common.v1.SideEffects` 어노테이션을 정의했습니다.
+  - 액션 실행 완료 시 `TargetEntities`로 자기 자신(빈 `<NavigationPropertyPath/>`) 및 `TargetProperties`로 `Delflag`를 지정하여 테이블 목록을 즉시 자동 재조회(Refresh)하도록 구성했습니다.
+
+```xml
+<Annotations Target="SAP__self.MainType">
+    <!-- solutionDelete 논리삭제 후 테이블 자동 새로고침 -->
+    <Annotation Term="Common.SideEffects" Qualifier="SolutionDeleteRefresh">
+        <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceActions">
+                <Collection>
+                    <String>com.sap.gateway.srvd.zsp_itsm_p_solution_ui.v0001.solutionDelete</String>
+                </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetEntities">
+                <Collection>
+                    <NavigationPropertyPath></NavigationPropertyPath>
+                </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+                <Collection>
+                    <PropertyPath>Delflag</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
+```

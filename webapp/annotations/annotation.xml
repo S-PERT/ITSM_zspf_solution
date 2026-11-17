@@ -13,6 +13,29 @@
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
+            <!-- MainType (고객 적용 솔루션) -->
+            <Annotations Target="SAP__self.MainType">
+                <!-- solutionDelete 논리삭제 후 테이블 자동 새로고침 -->
+                <Annotation Term="Common.SideEffects" Qualifier="SolutionDeleteRefresh">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="SourceActions">
+                            <Collection>
+                                <String>com.sap.gateway.srvd.zsp_itsm_p_solution_ui.v0001.solutionDelete</String>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath></NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <PropertyPath>Delflag</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
