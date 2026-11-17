@@ -13,24 +13,51 @@
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
-            <!-- MainType (고객 적용 솔루션) -->
+            <!-- 1. EntityType 레벨 SideEffects (SourceActions) -->
             <Annotations Target="SAP__self.MainType">
-                <!-- solutionDelete 논리삭제 후 테이블 자동 새로고침 -->
+                <!-- solutionDelete 논리삭제 후 루트 리스트 새로고침 -->
                 <Annotation Term="Common.SideEffects" Qualifier="SolutionDeleteRefresh">
                     <Record Type="Common.SideEffectsType">
                         <PropertyValue Property="SourceActions">
                             <Collection>
                                 <String>com.sap.gateway.srvd.zsp_itsm_p_solution_ui.v0001.solutionDelete</String>
+                                <String>SAP__self.solutionDelete</String>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property="TargetEntities">
                             <Collection>
-                                <NavigationPropertyPath></NavigationPropertyPath>
+                                <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_solution_ui.v0001.Container/Main</NavigationPropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property="TargetProperties">
                             <Collection>
                                 <PropertyPath>Delflag</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+
+            <!-- 2. Action 레벨 SideEffects (TargetEntities 지정) -->
+            <Annotations Target="SAP__self.solutionDelete(SAP__self.MainType)">
+                <Annotation Term="Common.SideEffects" Qualifier="SolutionDeleteActionRefresh">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_solution_ui.v0001.Container/Main</NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+
+            <!-- 3. Bound Action 슬래시 표기법 지원 -->
+            <Annotations Target="SAP__self.MainType/solutionDelete">
+                <Annotation Term="Common.SideEffects" Qualifier="SolutionDeleteBoundRefresh">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_solution_ui.v0001.Container/Main</NavigationPropertyPath>
                             </Collection>
                         </PropertyValue>
                     </Record>
