@@ -24,7 +24,7 @@ builder:
           name: ZSPF_SOLUTION
           description: 고객 적용 솔루션
           package: ZSP_ITSM_SOLUTION
-          transport: SPDK903961
+          transport: SPDK904130
         exclude:
           - /test/
           - /localService/
